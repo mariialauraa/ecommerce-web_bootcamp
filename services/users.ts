@@ -6,7 +6,8 @@ interface SignInData {
   password: string;
 }
 
-interface SignInResponse {
+//quer a resposta do tipo User
+interface SignInResponse { 
   data: User
 }
 
