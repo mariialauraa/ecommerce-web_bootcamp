@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 
 interface SearchAndIcon {
   icon: IconProp;
-  newPath: string; //é o caminho do componente de criação de recurso
+  newPath: string; // é o caminho do componente de criação de recurso
 }
 
 const SearchAndIcon: React.FC<SearchAndIcon> = ({ icon, newPath }) => {
