@@ -1,7 +1,7 @@
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
 import AdminHeader from '../Header/AdminHeader';
 import AdminFooter from '../Footer/AdminFooter';
+import { Col, Row } from 'react-bootstrap';
 import LateralMenu from '../LateralMenu';
 
 
