@@ -15,3 +15,11 @@
 .active svg {
   color: var(--color-active);
 }
+
+/* esconder o menu lateral qdo o tamanho da tela for no máx 990px (mobile) */
+@media screen and (max-width: 990px) {
+  .background {
+    visibility: hidden;
+    height: 0;
+  }
+}

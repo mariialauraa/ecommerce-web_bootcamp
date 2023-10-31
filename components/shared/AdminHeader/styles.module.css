@@ -20,3 +20,29 @@
 .active {
   color: var(--color-active);
 }
+
+.menu {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* jogar o icone do usuário p/ direita */
+}
+
+@media screen and (max-width: 990px) { /* só roda qdo a largura máx da tela for 990px */
+  .background {
+    margin: 20px 1px;
+  }
+
+  .menu {
+    justify-content: space-around; /* espaço igual entre os ícones */
+  }
+
+  .profile {
+    display: none;
+  }
+}

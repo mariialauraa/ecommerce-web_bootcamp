@@ -82,11 +82,9 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({name}) => {
         </Link>
       </Col>
 
-      <Col lg={6} xs={3} className="d-none d-md-block">
-        <div className="float-right">
-          <span className={styles.name}>{ name }</span>
-          <FontAwesomeIcon icon={faUserCircle} color="var(--color-gray-light)" />
-        </div>
+      <Col lg={6} xs={3} className={styles.profile}>        
+        <span className={styles.name}>{ name }</span>
+        <FontAwesomeIcon icon={faUserCircle} color="var(--color-gray-light)" />
       </Col>
     </Row>
   )
