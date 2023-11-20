@@ -1,0 +1,6 @@
+.carousel {
+  margin-top: 20px;
+  width: 80%;
+  /* pega 80%, mais 10% margem a esquerda e os outros 10% a direita, centraliza o objeto */
+  margin-left: 10%;
+}
