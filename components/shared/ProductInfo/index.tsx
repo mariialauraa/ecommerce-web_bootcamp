@@ -25,7 +25,7 @@ const ProductInfo: React.FC<HighlitedButtonProps> = ({ type = 'normal', product 
             {product.name}
           </p>
           <p>
-            {product.description.slice(0, 26) + '...' }
+            {product.description}
           </p>
         </div>
 
