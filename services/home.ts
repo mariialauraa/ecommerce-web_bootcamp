@@ -4,7 +4,7 @@ import ProductHome from '../dtos/ProductHome';
 
 interface HomeIndexData {
   featured: ProductHome[];  
-  'last_realeases': ProductHome[]; /* as 'aspas' é devido ao uso do ( _ ) */
+  'last_releases': ProductHome[]; /* as 'aspas' é devido ao uso do ( _ ) */
   cheapest: ProductHome[];
 };
 
