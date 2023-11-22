@@ -19,7 +19,9 @@ const CustomerHeader: React.FC = () => {
 
     //qdo executar a pesquisa vai redirecionar p/ a rota de pesquisa
     const handleSearch = (): void => {
-        router.push(`/Search${ProductSearchService.execute({ search })}`);
+        router.push(`
+            /Search?search=${search}&length=12&page=1&order=price&direction=asc
+        `);
     }
 
     return (
