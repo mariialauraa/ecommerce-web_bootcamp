@@ -1,11 +1,104 @@
+import { useState, useEffect } from 'react';
 import MainComponent from '../../components/shared/MainComponent';
 import { InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles.module.css';
 
+import ProductInfo from '../../components/shared/ProductInfo';
+
+import useSwr from 'swr';
+import { useRouter } from 'next/router';
+
+import SearchService from '../../services/search';
+import ProductSearchService from '../../util/ProductSearchService';
+import CategoriesService from '../../services/categories';
+
+import { toast } from 'react-toastify';
+
+const defaultUrl = '/storefront/v1/products';
+
 const Search: React.FC = () => {
-  const handleSearch = () => {}
+  const router = useRouter();
+  const { 
+    search: searchRouter, 
+    page, 
+    category, 
+    price, 
+    order: orderRouter, 
+    direction 
+  } = router.query;
+
+  // estados locais
+  const [search, setSearch] = useState(searchRouter?.toString());
+  const [order, setOrder] = useState(() => {
+    if (!!orderRouter) {
+      return `${orderRouter.toString()}-${direction.toString()}`;
+    }
+    // se não estiver presente retorna:
+    return 'price-asc';
+  });
+
+  // atualiza o estado da url depois da pesquisa
+  const [url, setUrl] = useState(() => (
+      defaultUrl +
+      ProductSearchService.execute({
+        search,
+        order: orderRouter,
+        direction: direction
+      })
+    )
+  );
+
+  const { data, error } = useSwr(url, SearchService.execute);
+
+  const { data: categoriesData, error: categoriesError } = 
+    useSwr('/storefront/v1/categories?length=999', CategoriesService.index);
+
+
+    // monitora os 'query params' pra qdo forem alterados, altere tbm a 'url' 
+    useEffect(() => {
+    setUrl(
+      defaultUrl +
+      ProductSearchService.execute({
+        search: searchRouter,
+        page,
+        category,
+        price,
+        order: orderRouter,
+        direction
+      })
+    )
+  }, [setSearch, page, category, price, orderRouter, direction]);
+
+  // observa a ordenação do 'order'
+  useEffect(() => {
+    router.push({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+        page: 1,
+        order: order.split('-')[0],
+        direction: order.split('-')[1]
+      }
+    });
+  }, [order]);
+
+  const handleSearch = ():void => {
+    router.push(`
+      /Search${ProductSearchService.execute({ search })}
+    `);
+  }
+
+  if (error) {
+    toast.error('Erro ao pesquisa produtos.');
+    console.log(error);
+  }
+
+  if (categoriesError) {
+    toast.error('Erro ao obter as categorias');
+    console.log(categoriesError);
+  }
 
   return (
     <MainComponent>
@@ -19,7 +112,23 @@ const Search: React.FC = () => {
         <Row className="text-center col-md-6 offset-md-3">
           <Col xs={10}>
             <InputGroup>
-              <FormControl placeholder="Pesquise!!"/>
+              <FormControl 
+                placeholder="Pesquisar..."
+                value={search}
+                onChange={
+                  (evt: React.ChangeEvent<HTMLInputElement>) => 
+                    setSearch(evt.target.value)
+                }
+
+                // qdo o usuário der 'enter' o evento é chamado
+                onKeyUp={
+                  (evt: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (evt.key.toLowerCase() === 'enter') {
+                      handleSearch();
+                    }
+                  }
+                }
+              />
             </InputGroup>
           </Col>
 
@@ -36,14 +145,21 @@ const Search: React.FC = () => {
         <Row>
           <Col sm={6} xs={12} className={styles.results}>
             <span>
-              16 resultado(s)
+              {data?.meta?.total} resultado(s)
             </span>
           </Col>
 
           <Col sm={6} xs={12}>
             <div className={styles.ordenation}>
               <strong className="mr-3">Ordernar por:</strong>
-              <select className={styles.secondary}>
+              <select 
+                className={styles.secondary}
+                value={order}
+                onChange={
+                  (evt: React.ChangeEvent<HTMLSelectElement>) => 
+                    setOrder(evt.target.value)
+                }
+              >
                 <option value="price-asc">Menor preço</option>
                 <option value="price-desc">Maior preço</option>
                 <option value="release_date-asc">Lançamentos</option>
@@ -54,25 +170,83 @@ const Search: React.FC = () => {
         </Row>
 
         <Row>
-          <select className={styles.primary}>
-            <option>Categoria</option>
-            <option>1</option>
-            <option>2</option>
+          <select 
+            className={styles.primary}
+            onChange={
+              (evt: React.ChangeEvent<HTMLSelectElement>) => {
+                // faz o redirecionamento direto:
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    ...router.query,
+                    page: 1,
+                    category: evt.target.value
+                  }
+                })
+              }
+            }
+          >
+            <option value="">Categoria</option>
+            {
+              categoriesData?.categories?.map(
+                category => (
+                  <option
+                    key={category.id}
+                    value={category.id}
+                  >
+                    {category.name}
+                  </option>
+                )
+              )
+            }
           </select>
 
-          <select className={styles.primary}>
-            <option>Preço</option>
-            <option>1</option>
-            <option>2</option>
+          <select 
+            className={styles.primary}
+            onChange={
+              (evt: React.ChangeEvent<HTMLSelectElement>) => {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    ...router.query,
+                    page: 1,
+                    price: evt.target.value
+                  }
+                })
+              }
+            }
+          >
+            <option value="">Preço</option>
+            <option value="0-50">0 - 50</option>
+            <option value="50.01-100">50 - 100</option>
+            <option value="100.01-150">100 - 150</option>
+            <option value="150.01">+ 150</option>
           </select>
         </Row>
 
         <div className="mt-4">
-          <h5>
-            Resultados para Resident Evil 2
-          </h5>
+          {
+            // só vai ser exibido qdo existir uma pesquisa
+            router?.query?.search &&
+            <h5>
+              Resultados para {router?.query?.search}
+            </h5>
+          }
         </div>
       </div>
+
+      <Row className="mt-4 mb-4">
+        {
+          // listagem dos produtos:
+          data?.products?.map(
+            product => (
+              <Col md={3} key={product.id}>
+                <ProductInfo product={product}/>
+              </Col>
+            )
+          )
+        }
+      </Row>
 
 
     </MainComponent>
