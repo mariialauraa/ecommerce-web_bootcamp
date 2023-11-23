@@ -1,12 +1,5 @@
 import api from './api';
-
-import ProductHome from '../dtos/ProductHome';
-
-interface HomeIndexData {
-  featured: ProductHome[];  
-  'last_releases': ProductHome[]; /* as 'aspas' é devido ao uso do ( _ ) */
-  cheapest: ProductHome[];
-};
+import HomeIndexData from '../dtos/HomeIndexData';
 
 /* responsável por fazer a requisição 'get' para nossa 'api' */
 const HomeService = {
