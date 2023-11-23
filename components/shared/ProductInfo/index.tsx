@@ -2,6 +2,8 @@ import { Button } from 'react-bootstrap';
 import styles from './styles.module.css';
 import ProductHome from '../../../dtos/ProductHome';
 
+import { useRouter } from 'next/router';
+
 interface HighlitedButtonProps {
   type?: string;
   product: ProductHome;
@@ -9,6 +11,8 @@ interface HighlitedButtonProps {
 
 /* botão por padrão é do tipo 'normal' */
 const ProductInfo: React.FC<HighlitedButtonProps> = ({ type = 'normal', product }) => {
+  const router = useRouter();
+
   return (
     <div className={styles.product}>
       <div>
@@ -35,6 +39,7 @@ const ProductInfo: React.FC<HighlitedButtonProps> = ({ type = 'normal', product 
             className={
               `${(type === 'highlighted' ? 'btn btn-info' : styles.normal_button)}`
             }
+            onClick={() => router.push(`/Product/${product.id}`)}
           >
             {`R$ ${product.price}`}
           </Button>
