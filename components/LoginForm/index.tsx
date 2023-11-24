@@ -59,8 +59,14 @@ const LoginForm: React.FC<LoginProps> = ({ titlePhrase, buttonPhrase }) => {
   
       toast.info('Login realizado com sucesso!'); //janela pop up
   
-      //redirecionar o usuario
-      router.push(user.profile === 'admin' ? '/Admin/' : '/')
+      //redireciona o usuário para rota que exige que ele esteja logado
+      if (router.query.callback) {
+        //a função 'decodeURIComponent' desconverte o '/' que por causa da a codificação UTF-8
+        //é convertido para '%2F' e transforma ele de novo para '/'
+        router.push(decodeURIComponent(router.query.callback.toString()));
+      } else {
+        router.push(user.profile === 'admin' ? '/Admin' : '/')
+      }
   
     } catch (err) {
       toast.error('E-mail ou senha inválidos!');

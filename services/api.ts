@@ -3,7 +3,7 @@ import Cookie from 'js-cookie';
 import ApiData from '../dtos/ApiData';
 import ApiResponseError from '../dtos/ApiResponseError';
 
-// importação do router para que possamos realizar o redirect caso o usuário recebe a mensagem da api de que não acesso ao recurso que tentou acessar.
+// importação do 'router' para que possamos realizar o redirect caso o usuário recebe a mensagem da api de não acesso ao recurso que tentou acessar.
 import Router from 'next/router';
 import { toast } from 'react-toastify';
 
@@ -11,7 +11,7 @@ const api = axios.create({
   baseURL: 'http://localhost:3000'
 });
 
-// adição da função para setar os headers de authẽnticação na api e nos cookies do browser, iremos utilizar ela no interceptor de request (tanto no fluxo normal quando no fluxo de erro).
+// adição da função para setar os 'headers' de autenticação na api e nos cookies do browser, iremos utilizar ela no interceptor de request (tanto no fluxo normal quando no fluxo de erro).
 function setHeaders(res: AxiosResponse<any>) {
   if(res.headers['access-token'] && res.headers['access-token'] !== '') {
     const apiData: ApiData = {
@@ -32,13 +32,13 @@ api.interceptors.response.use(res => {
   return res;
 }
 , err => {
-  // caso um erro ocorra na response, um novo token é retornado, logo devemos atualizá-lo na api e nos cookies
+  // caso um erro ocorra na 'response', um novo token é retornado, logo devemos atualizá-lo na api e nos cookies
   if (err.response) {
     setHeaders(err.response);
 
     const data = err.response.data;
 
-    // aqui estamos tratando os erros no padrão que o rails no devolve, se existem algum array de erros, iremos extrair o nome do campo e as mensagens para que as mesmas possam ser exibidas na tela utilizando um toast
+    // aqui estamos tratando os erros no padrão que o rails nos devolve, se existe algum array de 'erros', iremos extrair o nome do campo e as mensagens para que as mesmas possam ser exibidas na tela utilizando um toast
     if (data && data.errors && data.errors.fields) {
       const errors = data.errors as ApiResponseError;
 
@@ -52,7 +52,7 @@ api.interceptors.response.use(res => {
     }
   }
 
-  // caso a response tenha um status de não autorizado ou acesso negado, o usuário será redirecionado para o login.
+  // caso a 'response' tenha um status de não autorizado ou acesso negado, o usuário será redirecionado para o login.
   if (err.response && (
       err.response.status === 401 ||
       err.response.status === 403
@@ -66,8 +66,15 @@ api.interceptors.response.use(res => {
 api.interceptors.request.use(req => {
   req.headers = { ContentType: 'application/json' };
 
-  if(req.url.includes('admin')) {
-    const apiData: ApiData = JSON.parse(Cookie.get('@api-data'));
+  if (req.url.includes('admin')) {
+    const apiDataCookie = Cookie.get('@api-data');
+
+    //caso ela não exista
+    if (!apiDataCookie) {
+      return req;
+    }
+
+    const apiData: ApiData = JSON.parse(apiDataCookie);
     req.headers = { ...apiData, ...req.headers };
   }
 
