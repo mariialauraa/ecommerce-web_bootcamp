@@ -13,8 +13,9 @@ import styles from './styles.module.css';
 
 import withAuth from '../../components/withAuth';
 import { useSelector, useDispatch } from 'react-redux';
+
 import User from '../../dtos/User';
-import UsersService from '../../services/users'; 
+import ProfileService from '../../services/profile';
 //atualização do usuário
 import { setLoggedUser } from '../../store/modules/auth/reducer';
 
@@ -35,7 +36,7 @@ const Profile: React.FC = () => {
     evt.preventDefault(); //previne que atualize a página
 
     try {
-      await UsersService.update({
+      await ProfileService.update({
         name,
         email,
         password,
@@ -53,7 +54,7 @@ const Profile: React.FC = () => {
         profile: user.profile
       }));
     } catch (error) {
-      toast.error('Erro ao atualiar o usuário, tente novamente.');
+      toast.error('Erro ao atualizar o usuário, tente novamente.');
       console.log(error);
       //sempre executa, tanto no 'try' qto no 'catch'
     } finally {
