@@ -4,11 +4,12 @@ import { InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import Logo from '../../Logo';
-import Link from 'next/link';
 
 import { useRouter } from 'next/router';
 
 import LoggedService from '../../../../util/LoggedService';
+
+import Badge from '../../Badge';
 
 const CustomerHeader: React.FC = () => {
 
@@ -75,7 +76,10 @@ const CustomerHeader: React.FC = () => {
               </Col>
 
               <Col>
-                <FontAwesomeIcon icon={faShoppingCart} color="var(--color-gray-light)" />
+                <div>
+                  <FontAwesomeIcon icon={faShoppingCart} color="var(--color-gray-light)" />
+                  <Badge>15</Badge>
+                </div>
               </Col>
 
               <Col>
