@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import WishItem from '../../components/Storefront/WishItem';
 
 const Wishlist: React.FC = () => {
-  const { data, error } = useSwr('/storefront/v1/wish_items', WishlistService.index);
+  const { data, error, mutate } = useSwr('/storefront/v1/wish_items', WishlistService.index);
 
   if (error) {
     toast.error('Erro ao obter os games desejados.');
@@ -19,7 +19,15 @@ const Wishlist: React.FC = () => {
 
   //'components/Storefront/WishItem':
   const handleWishlistItemRemoval = async (productId: number): Promise<void> => {
-
+    try {
+      await WishlistService.remove(productId);
+      toast.info('Item removido da sua lista de desejos!');
+      //força o 'swr' a fazer uma revalidação de 'cache'
+      mutate();
+    } catch (error) {
+      toast.error('Erro ao remover item da sua lista de desejos.')
+      console.log(error);
+    }
   }
 
   return (
