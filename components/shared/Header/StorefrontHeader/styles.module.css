@@ -21,3 +21,9 @@
 .hidden {
   display: none;
 }
+
+/* travando o tamanho maximo do icone do 'cart' e alinhando ao centro */
+.cart_container {
+  max-width: 72px;
+  margin: 0 auto;
+}

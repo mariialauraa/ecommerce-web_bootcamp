@@ -10,11 +10,15 @@ import { useRouter } from 'next/router';
 import LoggedService from '../../../../util/LoggedService';
 
 import Badge from '../../Badge';
+import CartModal from '../../../Storefront/CartModal';
 
 const CustomerHeader: React.FC = () => {
 
   //estado de pesquisa, começa 'vazio'
   const [search, setSearch] = useState('');
+
+  //controla se vai ou não ser exibido
+  const [showCartModal, setShowCartModal] = useState(false);
 
   //redireciona o usuário para página de pesquisa
   const router = useRouter();
@@ -76,9 +80,19 @@ const CustomerHeader: React.FC = () => {
               </Col>
 
               <Col>
-                <div>
-                  <FontAwesomeIcon icon={faShoppingCart} color="var(--color-gray-light)" />
-                  <Badge>15</Badge>
+                <div className={styles.cart_container}>
+                  <FontAwesomeIcon 
+                    icon={faShoppingCart} 
+                    color="var(--color-gray-light)" 
+                    //altera o valor do estado local 'showCartModal' para o contrário (T/F)
+                    onClick={() => setShowCartModal(!showCartModal)} //(exbido/não exibido)
+                  />
+                  <Badge>5</Badge>                  
+                  {
+                    /*o 'Cart Modal' só existe enquanto o 'showCartModal' for 'true'*/
+                    showCartModal &&
+                      <CartModal searchPage={router.pathname === '/Search'} /> //rota de pesquisa
+                  }
                 </div>
               </Col>
 

@@ -12,7 +12,7 @@ const CartModalItem: React.FC = () => {
         </Col>
 
         <Col xs={7}>
-          <p>
+          <p className={styles.name}>
             God of War
           </p>
 
