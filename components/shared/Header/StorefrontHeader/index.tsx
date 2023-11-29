@@ -12,6 +12,9 @@ import LoggedService from '../../../../util/LoggedService';
 import Badge from '../../Badge';
 import CartModal from '../../../Storefront/CartModal';
 
+import { useSelector } from 'react-redux';
+import ProductShow from '../../../../dtos/ProductShow';
+
 const CustomerHeader: React.FC = () => {
 
   //estado de pesquisa, começa 'vazio'
@@ -19,6 +22,9 @@ const CustomerHeader: React.FC = () => {
 
   //controla se vai ou não ser exibido
   const [showCartModal, setShowCartModal] = useState(false);
+
+  //todos os produtos adicionados já estão nessa constante
+  const cartProducts: ProductShow[] = useSelector(state => state.cartProducts);
 
   //redireciona o usuário para página de pesquisa
   const router = useRouter();
@@ -87,10 +93,16 @@ const CustomerHeader: React.FC = () => {
                     //altera o valor do estado local 'showCartModal' para o contrário (T/F)
                     onClick={() => setShowCartModal(!showCartModal)} //(exbido/não exibido)
                   />
-                  <Badge>5</Badge>                  
+                  {
+                    /* só exibe o 'badge' se 'cartProducts' for maior q 0 */
+                    cartProducts?.length > 0 &&
+                      <Badge>{cartProducts.length}</Badge>
+                  }
+                                   
                   {
                     /*o 'Cart Modal' só existe enquanto o 'showCartModal' for 'true'*/
-                    showCartModal &&
+                    /*tbm só existe se tiver algum item no 'carrinho'*/
+                    cartProducts?.length > 0 && showCartModal &&
                       <CartModal searchPage={router.pathname === '/Search'} /> //rota de pesquisa
                   }
                 </div>
