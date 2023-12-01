@@ -50,7 +50,7 @@
 }
 
 .payment div {
-  margin-right: 5px !important;
+  margin-right: 5px !important; /*sobrescrever*/
   margin-top: 5px !important;
 }
 
