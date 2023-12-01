@@ -8,6 +8,8 @@ import Image from 'next/image';
 import styles from './styles.module.css';
 import MaskedInput from 'react-text-mask';
 
+import MonthsService from '../../../util/MonthsService';
+
 const CheckoutForm: React.FC = () => {
 
   const handleSubmit = async (evt: React.FormEvent) => {
@@ -119,9 +121,17 @@ const CheckoutForm: React.FC = () => {
                     className={styles.gray_select}
                   >
                     <option value="">Mês</option>
-                    <option>Dezembro</option>
-                    <option>Janeiro</option>
-                    <option>Fevereiro</option>
+                    {
+                      MonthsService.execute().map(
+                        (month, index) => 
+                          <option 
+                            key={index}
+                            value={index + 1} //pq no padrão do array, 'Janeiro' seria '0'
+                          >
+                            {month} 
+                          </option>
+                      )
+                    }
                   </select>
                 </Col>
 
@@ -130,9 +140,19 @@ const CheckoutForm: React.FC = () => {
                     className={styles.gray_select}
                   >
                     <option value="">Ano</option>
-                    <option>2023</option>
-                    <option>2024</option>
-                    <option>2025</option>
+                    {
+                      //cria um array com 6, o método 'fill' preenche as 6 posições com 0
+                      new Array(6).fill(0).map(
+                        //ignora o primeiro parâmetro
+                        (_, index) =>
+                          <option
+                            key={index}
+                            value={new Date().getFullYear() + index} //ano atual + index (2023 + 1)
+                          >
+                            {new Date().getFullYear() + index}
+                          </option>
+                      )
+                    }
                   </select>
                 </Col>
               </Row>
