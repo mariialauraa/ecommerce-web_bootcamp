@@ -13,12 +13,19 @@ import withAuth from '../../components/withAuth';
 import CheckoutForm from '../../components/Storefront/CheckoutForm';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { removeCartProduct } from '../../store/modules/storefront/cartProducts/reducer';
+import { removeCartProduct, clearCartProducts } from '../../store/modules/storefront/cartProducts/reducer';
 import ProductShow from '../../dtos/ProductShow';
 
 import ValidateCouponService from '../../services/validateCoupon';
 import { toast } from 'react-toastify';
 import Coupon from '../../dtos/Coupon';
+
+import AggregateItemsService from '../../util/AggregateItemsService';
+import Checkout from '../../dtos/Checkout';
+
+import CheckoutService from '../../services/checkout';
+
+import { useRouter } from 'next/router';
 
 const Cart: React.FC = () => {
   const [coupon, setCoupon] = useState<Coupon>();
@@ -26,6 +33,7 @@ const Cart: React.FC = () => {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
 
+  const router = useRouter();
   const dispatch = useDispatch();
   const cartProducts: ProductShow[] = useSelector(state => state.cartProducts);
 
@@ -59,6 +67,35 @@ const Cart: React.FC = () => {
       toast.error('Cupom inválido ou erro ao obter os dados do cupom!');
       console.log(error);
       setCoupon(null); //caso erro seta o cupom para 'null'
+    }
+  }
+
+  const handleCheckoutSubmit = async(checkout: Checkout): Promise<void> => {
+    try {
+      const items = AggregateItemsService.execute(cartProducts);
+      checkout.items = items; //add os itens
+
+      //se cupom existir:
+      if (coupon) {
+        checkout['coupon_id'] = coupon.id;
+      }
+
+      const order = await CheckoutService.execute(checkout);
+
+      dispatch(clearCartProducts());
+
+      router.push({
+        pathname: '/PaymentConfirmation/[id]',
+        query: {
+          id: order.id
+        }
+      });
+
+      toast.info('Pedido finalizado com sucesso!');
+
+    } catch (error) {
+      toast.error('Erro ao realizar o pedido, tente novamente!');
+      console.log(error);
     }
   }
 
@@ -189,7 +226,11 @@ const Cart: React.FC = () => {
             </div>
           </div>
 
-          <CheckoutForm />
+          {/* onde arrumou o valor total e as parcelas do 'CheckoutForm' */}
+          <CheckoutForm 
+            total={total}
+            handleFormSubmit={handleCheckoutSubmit}
+          />
         </Col>
       </Row>
     </MainComponent>

@@ -11,7 +11,15 @@ import MaskedInput from 'react-text-mask';
 
 import MonthsService from '../../../util/MonthsService';
 
-const CheckoutForm: React.FC = () => {
+import Checkout from '../../../dtos/Checkout';
+
+interface CheckoutFormProps {
+  //total do pedido
+  total: number;
+  handleFormSubmit(checkout: Checkout): Promise<void>;
+}
+
+const CheckoutForm: React.FC<CheckoutFormProps> = ({total, handleFormSubmit}) => {
   const [document, setDocument] = useState('');
   const [street, setStreet] = useState('');
   const [number, setNumber] = useState('');
@@ -36,6 +44,15 @@ const CheckoutForm: React.FC = () => {
 
   const handleSubmit = async (evt: React.FormEvent) => {
     evt.preventDefault();
+
+    let checkout: Checkout = {
+      document,
+      payment_type: paymentType,
+      installments: installments || "1",
+      items:[]
+    };
+
+    await handleFormSubmit(checkout);
   }
 
   //CPF (11 dígitos) ou CNPJ (14 dígitos) e possuem '.' '-' '/'
@@ -267,7 +284,24 @@ const CheckoutForm: React.FC = () => {
                   disabled={!creditCard}
                 >
                   <option value="">Selecione</option>
-                  <option>1x 188.82 (188.82)</option>
+                  {
+                    //criou o parcelamento em 12x
+                    new Array(12).fill(0).map(
+                      (_, index) =>
+                        <option 
+                          key={index}
+                          value={index + 1} //número de parcelas
+                        >
+                          {
+                            `
+                              ${index + 1}x de                          
+                              ${(total / (index + 1)).toFixed(2)} 
+                              (${((total / (index + 1)) * (index + 1)).toFixed(2)})
+                            `
+                          }
+                        </option>
+                    )
+                  }                  
                 </select>
               </div>
             </div>
@@ -374,7 +408,7 @@ const CheckoutForm: React.FC = () => {
         <div>
           <strong>VALOR TOTAL</strong>
           <strong className="float-right">
-            R$ 188.82
+            {`R$ ${total.toFixed(2)}`}
           </strong>
         </div>
 
