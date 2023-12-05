@@ -28,7 +28,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({items}) => {
                   className="text-center"
                 >
                   <img 
-                    src={item?.image_url} 
+                    src="/assets/product-image.png"  
                     alt={item?.product} 
                   />
                 </Col>
