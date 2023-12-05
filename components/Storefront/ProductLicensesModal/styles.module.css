@@ -1,0 +1,23 @@
+/*sobrescrita do css do própio bootstrap*/
+.modal div {
+  background-color: var(--color-primary) !important; /*forçar q o estilo seja aplicado*/
+  border: none;
+}
+
+.modal span {
+  color: white;
+}
+
+.modal strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.key_input,
+.key_input:focus,
+.key_input:disabled {
+  background-color: var(--color-secondary);
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
