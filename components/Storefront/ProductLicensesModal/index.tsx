@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 
 interface ProductLicensesModalProps {
   show: boolean;
-  onHide: () => void;
+  onHide: () => void; //função do tipo 'void'
 }
 
 const ProductLicensesModal: React.FC<ProductLicensesModalProps> = ({ show, onHide }) => {
@@ -14,10 +14,11 @@ const ProductLicensesModal: React.FC<ProductLicensesModalProps> = ({ show, onHid
       show={show}
       onHide={onHide}
       size="lg"
-      centered
-      dialogClassName={styles.modal}    >
+      centered //vai ser centrado
+      dialogClassName={styles.modal} //para aplicar os nosso estilos  
+    >
       
-        <Modal.Header closeButton>
+        <Modal.Header closeButton> 
           <Modal.Title >
             Cuphead - "Don't deal with de the Devil"
           </Modal.Title>
@@ -28,7 +29,7 @@ const ProductLicensesModal: React.FC<ProductLicensesModalProps> = ({ show, onHid
           <Col>
             <strong>Chaves de Ativação</strong>
             <InputGroup className="mb-2">
-              <InputGroup.Prepend>
+              <InputGroup.Prepend> {/*liga o 'input Text' com o 'icon faKey'*/}
                 <InputGroup.Text className={styles.key_input}>
                   <FontAwesomeIcon icon={faKey} />
                 </InputGroup.Text>

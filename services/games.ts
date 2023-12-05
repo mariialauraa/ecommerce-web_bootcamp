@@ -1,5 +1,5 @@
 import api from './api';
-import Game from '../dtos/Games';
+import Game from '../dtos/Game';
 
 interface GamesIndexData {
   games: Game[];
