@@ -15,15 +15,13 @@ const ProductLicensesModal: React.FC<ProductLicensesModalProps> = ({ show, onHid
       onHide={onHide}
       size="lg"
       centered
-      dialogClassName={styles.modal}
-    >
-      <div className="modal-header">
-        <Modal closeButton>
-          <Modal.Title>
+      dialogClassName={styles.modal}    >
+      
+        <Modal.Header closeButton>
+          <Modal.Title >
             Cuphead - "Don't deal with de the Devil"
           </Modal.Title>
-        </Modal>
-      </div>
+        </Modal.Header>
 
       <Modal.Body>
         <Row>
