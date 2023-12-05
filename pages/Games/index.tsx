@@ -4,19 +4,30 @@ import MainComponent from '../../components/shared/MainComponent';
 import Menu from '../../components/Storefront/Menu';
 import Product from '../../components/Storefront/Product';
 
-import Pagination from '../../components/shared/Pagination';
-import styles from './styles.module.css';
-
 import ProductLicensesModal from '../../components/Storefront/ProductLicensesModal';
 import withAuth from '../../components/withAuth';
+
+import GamesService from '../../services/games';
+import useSwr from 'swr';
+import { toast } from 'react-toastify';
+
+import Game from '../../dtos/Game';
 
 const Games: React.FC = () => {
   //Qdo acessar a página o 'Modal' não é exibido
   const[show, setShow] = useState(false);
+  const[selectedProduct, setSelectedProduct] = useState<Game>();
 
-  //para setar o estado local do produto
-  const handleProductClick = (): void => {
+  const { data, error } = useSwr('/storefront/v1/games', GamesService.index);
+
+  if (error) {
+    toast.error('Erro ao obter os seus jogos.');
+    console.log(error);
+  }
+  
+  const handleProductClick = (id: number): void => {
     handleShow();
+    setSelectedProduct(data?.find(game => game.id === id));
   }
 
   //troca o estado do 'show' de T/F e F/T
@@ -29,40 +40,25 @@ const Games: React.FC = () => {
       <Menu tab="my_games"/> {/*fica destacado 'Meus Games'*/}
 
       <Row>
-        <Col md={3} sm={6} xs={12}>
-          <Product 
-            onClick={handleProductClick}
-          />
-        </Col>
-
-        <Col md={3} sm={6} xs={12}>
-          <Product 
-            onClick={handleProductClick}
-          />
-        </Col>
-
-        <Col md={3} sm={6} xs={12}>
-          <Product 
-            onClick={handleProductClick}
-          />
-        </Col>
-
-        <Col md={3} sm={6} xs={12}>
-          <Product 
-            onClick={handleProductClick}
-          />
-        </Col>
+        {
+          data?.map(
+            product =>
+              <Col md={3} sm={6} xs={12}
+                key={product.id}
+              >
+                <Product 
+                  product={product}
+                  onClick={() => handleProductClick(product?.id)}
+                />
+              </Col>
+          )
+        }
       </Row>
 
       <ProductLicensesModal
         show={show}
         onHide={handleShow}
-      />
-
-      <Pagination 
-        className={styles.pagination}
-        total_pages={1}
-        page={1}
+        selectedProduct={selectedProduct}
       />
     </MainComponent>
   );

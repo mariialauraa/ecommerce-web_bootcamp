@@ -2,14 +2,18 @@ import { Modal, Button, Col, Row, InputGroup, FormControl } from 'react-bootstra
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles.module.css';
+import Game from '../../../dtos/Game';
 
 interface ProductLicensesModalProps {
   show: boolean;
   onHide: () => void; //função do tipo 'void'
+  selectedProduct?: Game;
 }
 
-const ProductLicensesModal: React.FC<ProductLicensesModalProps> = ({ show, onHide }) => {
-  return (
+const ProductLicensesModal: React.FC<ProductLicensesModalProps> = 
+  ({ show, onHide, selectedProduct }) => {
+  
+    return (
     <Modal
       show={show}
       onHide={onHide}
@@ -20,26 +24,33 @@ const ProductLicensesModal: React.FC<ProductLicensesModalProps> = ({ show, onHid
       
         <Modal.Header closeButton> 
           <Modal.Title >
-            Cuphead - "Don't deal with de the Devil"
+            {selectedProduct?.name}
           </Modal.Title>
-        </Modal.Header>
+        </Modal.Header>        
 
       <Modal.Body>
         <Row>
           <Col>
             <strong>Chaves de Ativação</strong>
-            <InputGroup className="mb-2">
-              <InputGroup.Prepend> {/*liga o 'input Text' com o 'icon faKey'*/}
-                <InputGroup.Text className={styles.key_input}>
-                  <FontAwesomeIcon icon={faKey} />
-                </InputGroup.Text>
-              </InputGroup.Prepend>
+            {
+              selectedProduct?.licenses.map(
+                (license, index) => 
+                  <InputGroup className="mb-2" key={index}>
+                    <InputGroup.Prepend> {/*liga o 'input Text' com o 'icon faKey'*/}
+                      <InputGroup.Text className={styles.key_input}>
+                        <FontAwesomeIcon icon={faKey} />
+                      </InputGroup.Text>
+                    </InputGroup.Prepend>
 
-              <FormControl 
-                placeholder="Chave"
-                className={styles.key_input}
-              />
-            </InputGroup>
+                    <FormControl 
+                      placeholder="Chave"
+                      className={styles.key_input}
+                      defaultValue={license} //não é obrigado a usar o 'onChange'
+                      disabled
+                    />
+                  </InputGroup>
+              )
+            }
           </Col>
         </Row>
       </Modal.Body>
