@@ -1,11 +1,13 @@
 import React from 'react';
-import withAuthAdmin from '../../components/withAuthAdmin';
 import AdminComponent from '../../components/shared/AdminComponent';
+import withAuthAdmin from '../../components/withAuthAdmin';
+
+import Dashboard from '../../components/Admin/Dashboard';
 
 const Home: React.FC = () => {
   return (
     <AdminComponent>
-      <h1>Painel Admin</h1>
+      <Dashboard/>
     </AdminComponent>
   )
 }

@@ -13,13 +13,15 @@ import Dashboard from '../../../dtos/Dashboard';
 const defaultUrl = '/admin/v1/dashboard/sales_ranges';
 
 const DashboardGraphic: React.FC = () => {
+  //se o 'min ou max' for alterado, automaticamento o 'swr' faz o 'fetch'
   const { min_date, max_date }: Dashboard = useSelector(state => state.dashboard);
   
-  //fetch condicional:
+  //fetch condicional
+  //se as datas existirem, serão repassadas como parâmetros na 'url'
   const { data, error } = useSwr(
     () => defaultUrl +
-      (min_date || max_date) ?
-      `?min_date=${min_date}&max_date=${max_date}` : '',
+      ((min_date || max_date) ?
+      `?min_date=${min_date}&max_date=${max_date}` : ''),
     DashboardSalesRangeService.index
   );
 
@@ -69,7 +71,7 @@ const DashboardGraphic: React.FC = () => {
               fontSize: 14
             }}
             formatter={
-              (value, name, props) => ( [`R$ ${value.toFixed(2)}`, "Total vendido"])
+              (value, name, props) => ( [`R$ ${value}`, "Total vendido"])
             }
           />
           

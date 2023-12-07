@@ -19,8 +19,8 @@ const DashboardSummary: React.FC = () => {
   //fetch condicional:
   const { data, error } = useSwr(
     () => defaultUrl +
-      (min_date || max_date) ?
-      `?min_date=${min_date}&max_date=${max_date}` : '', 
+      ((min_date || max_date) ?
+      `?min_date=${min_date}&max_date=${max_date}` : ''), 
     DashboardSummaryService.index
   ); 
   
@@ -47,16 +47,6 @@ const DashboardSummary: React.FC = () => {
           <div>
             <span>+ {data?.products}</span>
             <span>Produtos</span>
-          </div>
-        </div>
-      </Col>
-
-      <Col>
-        <div className={styles.card}>
-          <FontAwesomeIcon icon={faUser} size="2x"/>
-          <div>
-            <span>+ {data?.users}</span>
-            <span>Usuários</span>
           </div>
         </div>
       </Col>
