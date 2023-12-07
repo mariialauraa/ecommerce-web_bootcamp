@@ -7,8 +7,21 @@ import DashboardSalesRangeService from '../../../services/dashboardSalesRange';
 import useSwr from 'swr';
 import { toast } from 'react-toastify';
 
+import { useSelector } from 'react-redux';
+import Dashboard from '../../../dtos/Dashboard';
+
+const defaultUrl = '/admin/v1/dashboard/sales_ranges';
+
 const DashboardGraphic: React.FC = () => {
-  const { data, error } = useSwr('/admin/v1/dashboard/sales_range', DashboardSalesRangeService.index);
+  const { min_date, max_date }: Dashboard = useSelector(state => state.dashboard);
+  
+  //fetch condicional:
+  const { data, error } = useSwr(
+    () => defaultUrl +
+      (min_date || max_date) ?
+      `?min_date=${min_date}&max_date=${max_date}` : '',
+    DashboardSalesRangeService.index
+  );
 
   if (error) {
     toast.error('Erro ao obter os dados para o gráfico do dashboard.')

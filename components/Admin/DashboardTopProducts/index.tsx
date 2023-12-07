@@ -6,8 +6,21 @@ import useSwr from 'swr';
 import DashboardTopProductService from "../../../services/dashboardTopProducts";
 import { toast } from "react-toastify";
 
+import { useSelector } from 'react-redux';
+import Dashboard from "../../../dtos/Dashboard";
+
+const defaultUrl = '/admin/v1/dashboard/top_five_products';
+
 const DashboardTopProducts: React.FC = () => {
-  const { data, error } = useSwr('/admin/v1/dashboard/top_five_products', DashboardTopProductService.index);
+  const { min_date, max_date }: Dashboard = useSelector(state => state.dashboard);
+  
+  //fetch condicional:
+  const { data, error } = useSwr(
+    () => defaultUrl +
+      (min_date || max_date) ?
+      `?min_date=${min_date}&max_date=${max_date}` : '',
+    DashboardTopProductService.index
+  );
 
   if (error) {
     toast.error('Erro ao obter os dados para os top 5 produtos.');

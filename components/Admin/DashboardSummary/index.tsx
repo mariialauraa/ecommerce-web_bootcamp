@@ -7,9 +7,22 @@ import useSwr from 'swr';
 import DashboardSummaryService from "../../../services/dashboardSummary";
 import { toast } from 'react-toastify';
 
+import { useSelector } from 'react-redux';
+import Dashboard from "../../../dtos/Dashboard";
+
+//rota da 'api' para pegar os dados do 'dashboard' da parte do 'summaries'
+const defaultUrl = '/admin/v1/dashboard/summaries';
+
 const DashboardSummary: React.FC = () => {
-  //rota da 'api' para pegar os dados do 'dashboard' da parte do 'summaries'
-  const { data, error } = useSwr('/admin/v1/dashboard/summaries', DashboardSummaryService.index); 
+  const { min_date, max_date }: Dashboard = useSelector(state => state.dashboard);
+  
+  //fetch condicional:
+  const { data, error } = useSwr(
+    () => defaultUrl +
+      (min_date || max_date) ?
+      `?min_date=${min_date}&max_date=${max_date}` : '', 
+    DashboardSummaryService.index
+  ); 
   
   if (error) {
     toast.error('Erro ao obter os dados para o resumo do dashboard.');
